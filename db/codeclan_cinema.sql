@@ -1,3 +1,4 @@
+DROP TABLE screenings;
 DROP TABLE tickets;
 DROP TABLE films;
 DROP TABLE customers;
@@ -18,4 +19,12 @@ CREATE TABLE tickets (
 id SERIAL8 PRIMARY KEY,
 customer_id INT8 REFERENCES customers(id) ON DELETE CASCADE,
 film_id INT8 REFERENCES films(id) ON DELETE CASCADE
+);
+
+CREATE TABLE screenings (
+id SERIAL8 PRIMARY KEY,
+time TIME NOT NULL,
+film_id INT8 REFERENCES films(id) ON DELETE CASCADE
+-- Why can't I do this? Can you only REFERENCE things that are unique like id's?
+-- film_name VARCHAR(255) REFERENCES films(name) ON DELETE CASCADE
 );

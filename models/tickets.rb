@@ -12,8 +12,8 @@ attr_reader :id
 
   def save()
       sql = "INSERT INTO tickets (customer_id, film_id) VALUES (#{@customer_id}, #{@film_id}) RETURNING *"
-      film = SqlRunner.run(sql).first()
-      @id = film["id"]
+      ticket = SqlRunner.run(sql).first()
+      @id = ticket["id"]
       pay_for_tic()
   end
 

@@ -2,6 +2,7 @@ require('pry')
 require_relative('models/customers')
 require_relative('models/films')
 require_relative('models/tickets')
+require_relative('models/screenings')
 
 Customer.delete_all()
 customer1 = Customer.new({"name" => "Ian Tennyson", "funds" => "50"})
@@ -35,6 +36,17 @@ ticket4.save()
 
 ticket5 = Ticket.new({"customer_id" => customer3.id, "film_id" => film1.id})
 ticket5.save()
+
+Screening.delete_all()
+screening1 = Screening.new({"time" => "14:00", "film_id" => film1.id})
+screening1.save()
+#screening1.delete()
+screening2 = Screening.new({"time" => "16:00", "film_id" => film2.id})
+screening2.save()
+screening3 = Screening.new({"time" => "18:00", "film_id" => film3.id})
+screening3.save()
+screening4 = Screening.new({"time" => "20:00", "film_id" => film1.id})
+screening4.save()
 
 
 binding.pry
