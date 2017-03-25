@@ -13,7 +13,8 @@ attr_reader :id
   def save()
       sql = "INSERT INTO tickets (customer_id, film_id) VALUES (#{@customer_id}, #{@film_id}) RETURNING *"
       film = SqlRunner.run(sql).first()
-      @id = film["id"].to_i
+      @id = film["id"]
+      pay_for_tic()
   end
 
   def delete
@@ -33,8 +34,31 @@ attr_reader :id
     return Film.new(film)
   end
 
+#The funds of the customer who owns the ticket. Returned as an int
+  def funds()
+    sql = "SELECT customers.funds FROM customers WHERE id = #{@customer_id}"
+      funds = SqlRunner.run(sql).first().fetch("funds").to_i
+      return funds
+  end
 
+#The price of the ticket from the films. Returned as an int
+  def price()
+    sql = "SELECT films.price FROM films WHERE id = #{@film_id}"
+    price = SqlRunner.run(sql).first().fetch("price").to_i
+    return price
+  end
 
+#subtracts the price of the film from the funds and calls UPDATE to insert the new value.
+  def pay_for_tic()
+    result = funds() - price()
+    updated_funds = result.to_s
+    update_funds(updated_funds)
+  end
+
+  def update_funds(updated_customer_funds)
+    sql = "UPDATE customers SET (funds) = (#{updated_customer_funds}) WHERE id = #{@customer_id}"
+    SqlRunner.run(sql)
+  end
 
 
 

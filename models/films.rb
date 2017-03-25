@@ -1,4 +1,3 @@
-require('pry')
 require_relative('../db/sql_runner')
 
 class Film
@@ -33,11 +32,12 @@ class Film
     return Customer.map_items(sql)
   end
 
-  def purchase_ticket()
-    sql = "SELECT customers.funds FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE film_id = #{@id}"
-      funds = SqlRunner.run(sql)
-      binding.pry
+  def num_of_customers()
+    sql = "SELECT customers FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE film_id = #{@id}"
+    result = SqlRunner.run(sql).to_a
+    return result.length()
   end
+
 
 
 
