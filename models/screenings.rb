@@ -4,16 +4,17 @@ require_relative('../db/sql_runner')
 class Screening
 
   attr_reader :id
-  attr_accessor :time
+  attr_accessor :time, :num_of_tickets
 
   def initialize(options)
     @id = options['id'].to_i
     @time = options['time']
+    @num_of_tickets = options['num_of_tickets'].to_i
   end
 
   def save()
     #should #{@time} have '' around it? 
-    sql = "INSERT INTO screenings (time) VALUES ('#{@time}') RETURNING *"
+    sql = "INSERT INTO screenings (time, num_of_tickets) VALUES ('#{@time}', #{@num_of_tickets}) RETURNING *"
     screening = SqlRunner.run(sql).first()
     @id = screening["id"]
   end
@@ -32,10 +33,6 @@ class Screening
     sql = "SELECT screenings.time FROM screenings WHERE id = #{@id}"
     return SqlRunner.run(sql).first().values().pop()
   end
-
-
-
-
 
 
 

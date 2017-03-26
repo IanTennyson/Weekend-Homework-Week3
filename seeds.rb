@@ -26,14 +26,14 @@ film3.save()
 
 
 Screening.delete_all()
-screening1 = Screening.new({"time" => "14:00"})
+screening1 = Screening.new({"time" => "14:00", "num_of_tickets" => "5"})
 screening1.save()
 #screening1.delete()
-screening2 = Screening.new({"time" => "16:00"})
+screening2 = Screening.new({"time" => "16:00", "num_of_tickets" => "5"})
 screening2.save()
-screening3 = Screening.new({"time" => "18:00"})
+screening3 = Screening.new({"time" => "18:00", "num_of_tickets" => "5"})
 screening3.save()
-screening4 = Screening.new({"time" => "20:00"})
+screening4 = Screening.new({"time" => "20:00", "num_of_tickets" => "5"})
 screening4.save()
 
 

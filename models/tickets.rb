@@ -12,10 +12,15 @@ attr_reader :id
   end
 
   def save()
+    if tickets_remaining() > 0
       sql = "INSERT INTO tickets (customer_id, film_id, screening_id) VALUES (#{@customer_id}, #{@film_id}, #{@screening_id}) RETURNING *"
       ticket = SqlRunner.run(sql).first()
       @id = ticket["id"]
       pay_for_tic()
+      remove_ticket()
+    else 
+      return "I'm sorry that screening is all sold out."
+    end
   end
 
   def delete
@@ -59,6 +64,22 @@ attr_reader :id
   def update_funds(updated_customer_funds)
     sql = "UPDATE customers SET (funds) = (#{updated_customer_funds}) WHERE id = #{@customer_id}"
     SqlRunner.run(sql)
+  end
+
+  def tickets_remaining()
+    sql = "SELECT screenings.num_of_tickets FROM screenings WHERE id = #{@screening_id}" 
+    return SqlRunner.run(sql).first().fetch("num_of_tickets").to_i
+  end
+
+  def remove_ticket()
+    result = tickets_remaining() - 1
+    updated_tickets = result.to_s
+    sell_ticket(updated_tickets)
+  end
+
+  def sell_ticket(updated_tickets)
+    sql = "UPDATE screenings SET (num_of_tickets) = (#{updated_tickets}) WHERE id = #{@screening_id}"
+    SqlRunner.run(sql).first()
   end
 
 

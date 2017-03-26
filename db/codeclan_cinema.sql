@@ -17,7 +17,8 @@ price INT8
 
 CREATE TABLE screenings (
 id SERIAL8 PRIMARY KEY,
-time TIME NOT NULL
+time TIME NOT NULL,
+num_of_tickets INT8
 );
 
 CREATE TABLE tickets (
