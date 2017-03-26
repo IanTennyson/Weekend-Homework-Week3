@@ -3,18 +3,17 @@ require_relative('../db/sql_runner')
 
 class Screening
 
-  attr_reader :id, :film_id
+  attr_reader :id
   attr_accessor :time
 
   def initialize(options)
     @id = options['id'].to_i
     @time = options['time']
-    @film_id = options['film_id']
   end
 
   def save()
     #should #{@time} have '' around it? 
-    sql = "INSERT INTO screenings (time, film_id) VALUES ('#{@time}', #{@film_id}) RETURNING *"
+    sql = "INSERT INTO screenings (time) VALUES ('#{@time}') RETURNING *"
     screening = SqlRunner.run(sql).first()
     @id = screening["id"]
   end
@@ -25,18 +24,25 @@ class Screening
   end
 
   def film()
-    sql = "SELECT * FROM films where id = #{@film_id}"
-    return SqlRunner.run(sql).first().fetch("title")
+    sql = "SELECT films.title FROM films INNER JOIN tickets ON films.id = tickets.film_id WHERE tickets.screening_id = #{@id}"
+    return SqlRunner.run(sql).first().values().pop()
+  end
+
+  def time()
+    sql = "SELECT screenings.time FROM screenings WHERE id = #{@id}"
+    return SqlRunner.run(sql).first().values().pop()
   end
 
 
 
 
+
+
+
+
   def self.times()
-    sql = "SELECT screenings.time, films.title, films.price FROM screenings INNER JOIN films ON screenings.film_id = films.id;"
-    times = SqlRunner.run(sql)
-    times.map { |time| time_array << Screening.new(time)}
-    return time_array
+    sql = "SELECT screenings.time, films.title FROM screenings INNER JOIN tickets ON screenings.id = tickets.screening_id INNER JOIN films ON films.id = tickets.film_id"
+    return SqlRunner.run(sql).values().uniq()
   end
 
   def self.delete_all()
@@ -53,5 +59,20 @@ class Screening
     screenings = SqlRunner.run(sql)
     return screenings.map { |screening| Screening.new(screening) }
   end
+
+  def self.tickets_sold_by_screening()
+    sql = "SELECT screenings.time FROM screenings INNER JOIN tickets ON screenings.id = tickets.screening_id WHERE tickets.film_id = film_id"
+    times = SqlRunner.run(sql).values().flatten()
+    count_times = Hash.new 0
+    times.each do |time| 
+      count_times[time] += 1
+    end
+    return count_times.to_a
+  end
+
+#
+  # def self.best_seller()
+    
+  # end
 
 end

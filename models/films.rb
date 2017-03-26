@@ -58,4 +58,14 @@ class Film
     return films.map { |film| Film.new(film) }
   end
 
+  def self.tickets_sold_by_title()
+      sql = "SELECT films.title FROM films INNER JOIN tickets ON films.id = tickets.film_id WHERE tickets.screening_id = screening_id"
+      times = SqlRunner.run(sql).values().flatten()
+      count_times = Hash.new 0
+      times.each do |time| 
+        count_times[time] += 1
+      end
+      return count_times
+  end
+
 end
